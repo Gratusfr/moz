@@ -23,7 +23,7 @@ This script still in progress. In the TODO list :
 
 * Still be "use strict" compatible ;
 
-* Show <figcaption> as legend if exist ;
+* Show figcaption as legend if exist ;
   
 * More customization ;
 
