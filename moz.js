@@ -95,6 +95,8 @@
                  )
 
                  $('button').click(function () {
+                     $('.mozBut').children('button').removeClass('active');
+                     $(this).addClass('active');
                      $('#mdtImg').remove();
                      var src = mozRealChF.eq(this.innerHTML - 1).find('img').attr('src');
                      if (src === undefined) {
