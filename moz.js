@@ -121,6 +121,7 @@
 
                  })
                  $("#moz video").click(function () {
+                     var t = $('#moz img, #moz video').not('.mozExit').index(this);
                      if ($(this).parent().hasClass('mozExit') | $(this).hasClass('mozErrorSrc')) {
                          return;
                      }
