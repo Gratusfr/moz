@@ -1,22 +1,22 @@
  /************
-  
- JQuery plugin which create slider from images grid (mosaic).
-     Copyright (C) 2018  Gratusfr - https://github.com/Gratusfr/moz
+    
+   JQuery plugin which create slider from images grid (mosaic).
+       Copyright (C) 2018  Gratusfr - https://github.com/Gratusfr/moz
 
-     This program is free software: you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
+       This program is free software: you can redistribute it and/or modify
+       it under the terms of the GNU General Public License as published by
+       the Free Software Foundation, either version 3 of the License, or
+       (at your option) any later version.
 
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
+       This program is distributed in the hope that it will be useful,
+       but WITHOUT ANY WARRANTY; without even the implied warranty of
+       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+       GNU General Public License for more details.
 
-     You should have received a copy of the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>.
+       You should have received a copy of the GNU General Public License
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
- **************/
+   **************/
 
  (function ($) {
      "use strict";
@@ -41,7 +41,7 @@
                      userdata.bgColor = "#556b2f";
                  }
 
-                 var mozRealChF = $("#moz > figure");
+                 var mozRealChF = $("#moz > figure").not('.mozExit');
 
                  moz.append(document.createElement('div'));
                  moz.children().last().addClass('mozData');
@@ -53,6 +53,31 @@
                      mozdt.append(document.createElement('button'));
                      mozdt.children().last().text(i + 1);
                  };
+
+                 mozRealChF.each(function () {
+                     var a = $(this).find('img');
+                     var b = $(this).find('video');
+                     if (a.length == 1) {
+                         URL_validation(a);
+                     } else {
+                         URL_validation(b);
+                     }
+                 })
+
+
+                 function URL_validation(element) {
+                     var url = element.attr('src');
+                     var req = $.ajax(url, {
+                         'method': 'HEAD'
+                     })
+
+                     req.fail(function () {
+                         element.addClass('mozErrorSrc');
+                         //mozdt.children().last().remove(); => removed : prevent the access to valid imgs/vids if 404 links are not in the end.
+                     })
+                 }
+
+
                  mozdt.css({
                      'position': 'fixed',
                      'bottom': '5px',
@@ -74,13 +99,41 @@
                  });
                  mdt.hide();
 
-                 $("img").click(function () {
+                 $("#moz img").click(function () {
+                     if ($(this).parent().hasClass('mozExit') | $(this).hasClass('mozErrorSrc')) {
+                         return;
+                     }
+                     var t = $('#moz img, #moz video').not('.mozExit').index(this);
+                     $('.active').removeClass('active');
+                     $('.mozRight').removeClass('mozRight');
+                     $('.mozLeft').removeClass('mozLeft');
+                     t = t + 1;
+                     var t1 = t + 1;
+                     var t2 = t - 1;
+                     $('.mozBut button:nth-child(' + t + ')').addClass('active');
+                     $('.mozBut button:nth-child(' + t1 + ')').addClass('mozRight');
+                     $('.mozBut button:nth-child(' + t2 + ')').addClass('mozLeft');
+                     console.log(t);
+
                      CreateBigImg(this.src);
                      mdt.show();
                      mozdt.show();
 
                  })
-                 $("video").click(function () {
+                 $("#moz video").click(function () {
+                     if ($(this).parent().hasClass('mozExit') | $(this).hasClass('mozErrorSrc')) {
+                         return;
+                     }
+                     $('.active').removeClass('active');
+                     $('.mozRight').removeClass('mozRight');
+                     $('.mozLeft').removeClass('mozLeft');
+                     t = t + 1;
+                     var t1 = t + 1;
+                     var t2 = t - 1;
+                     $('.mozBut button:nth-child(' + t + ')').addClass('active');
+                     $('.mozBut button:nth-child(' + t1 + ')').addClass('mozRight');
+                     $('.mozBut button:nth-child(' + t2 + ')').addClass('mozLeft');
+
                      CreateBigVid(this.src);
                      mdt.show();
                      mozdt.show();
@@ -94,18 +147,29 @@
 
                  )
 
-                 $('button').click(function () {
+                 $('button').click(clickAction);
+
+                 function clickAction(no) {
                      $('.mozBut').children('button').removeClass('active');
+                     $('.mozRight').removeClass('mozRight');
+                     $('.mozLeft').removeClass('mozLeft');
                      $(this).addClass('active');
+                     $(this).next().addClass('mozRight');
+                     $(this).prev().addClass('mozLeft');
                      $('#mdtImg').remove();
-                     var src = mozRealChF.eq(this.innerHTML - 1).find('img').attr('src');
+                     var src = mozRealChF.eq(this.innerHTML - 1).find('img').not('.mozErrorSrc').attr('src');
                      if (src === undefined) {
-                         var src = mozRealChF.eq(this.innerHTML - 1).find('video').attr('src');
-                         CreateBigVid(src);
+                         var src = mozRealChF.eq(this.innerHTML - 1).find('video').not('.mozErrorSrc').attr('src');
+                         if (src === undefined) {
+                             console.warn('src undefined');
+                         } else {
+                             CreateBigVid(src);
+                         }
+
                      } else {
                          CreateBigImg(src);
                      }
-                 })
+                 }
 
                  function CreateBigImg(src) {
                      moz.append(document.createElement('img')).children().last().attr('src', src).attr('id', 'mdtImg');
