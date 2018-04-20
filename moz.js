@@ -1,22 +1,22 @@
  /************
-    
-   JQuery plugin which create slider from images grid (mosaic).
-       Copyright (C) 2018  Gratusfr - https://github.com/Gratusfr/moz
+     
+    JQuery plugin which create slider from images grid (mosaic).
+        Copyright (C) 2018  Gratusfr - https://github.com/Gratusfr/moz
 
-       This program is free software: you can redistribute it and/or modify
-       it under the terms of the GNU General Public License as published by
-       the Free Software Foundation, either version 3 of the License, or
-       (at your option) any later version.
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-       GNU General Public License for more details.
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
 
-       You should have received a copy of the GNU General Public License
-   along with this program. If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-   **************/
+    **************/
 
  (function ($) {
      "use strict";
@@ -104,37 +104,34 @@
                          return;
                      }
                      var t = $('#moz img, #moz video').not('.mozExit').index(this);
-                     $('.active').removeClass('active');
+                     $('.active').removeClass('active').prop('disabled', null);
                      $('.mozRight').removeClass('mozRight');
                      $('.mozLeft').removeClass('mozLeft');
                      t = t + 1;
                      var t1 = t + 1;
                      var t2 = t - 1;
-                     $('.mozBut button:nth-child(' + t + ')').addClass('active');
+                     $('.mozBut button:nth-child(' + t + ')').addClass('active').prop('disabled', true);
                      $('.mozBut button:nth-child(' + t1 + ')').addClass('mozRight');
                      $('.mozBut button:nth-child(' + t2 + ')').addClass('mozLeft');
-                     console.log(t);
-
                      CreateBigImg(this.src);
                      mdt.show();
                      mozdt.show();
 
                  })
                  $("#moz video").click(function () {
-                     var t = $('#moz img, #moz video').not('.mozExit').index(this);
                      if ($(this).parent().hasClass('mozExit') | $(this).hasClass('mozErrorSrc')) {
                          return;
                      }
-                     $('.active').removeClass('active');
+                     var t = $('#moz img, #moz video').not('.mozExit').index(this);
+                     $('.active').removeClass('active').prop('disabled', null);
                      $('.mozRight').removeClass('mozRight');
                      $('.mozLeft').removeClass('mozLeft');
                      t = t + 1;
                      var t1 = t + 1;
                      var t2 = t - 1;
-                     $('.mozBut button:nth-child(' + t + ')').addClass('active');
+                     $('.mozBut button:nth-child(' + t + ')').addClass('active').prop('disabled', true);
                      $('.mozBut button:nth-child(' + t1 + ')').addClass('mozRight');
                      $('.mozBut button:nth-child(' + t2 + ')').addClass('mozLeft');
-
                      CreateBigVid(this.src);
                      mdt.show();
                      mozdt.show();
@@ -151,10 +148,10 @@
                  $('button').click(clickAction);
 
                  function clickAction(no) {
-                     $('.mozBut').children('button').removeClass('active');
+                     $('.mozBut').children('button').removeClass('active').prop('disabled', null);
                      $('.mozRight').removeClass('mozRight');
                      $('.mozLeft').removeClass('mozLeft');
-                     $(this).addClass('active');
+                     $(this).addClass('active').prop('disabled', true);
                      $(this).next().addClass('mozRight');
                      $(this).prev().addClass('mozLeft');
                      $('#mdtImg').remove();
@@ -174,36 +171,51 @@
 
                  function CreateBigImg(src) {
                      moz.append(document.createElement('img')).children().last().attr('src', src).attr('id', 'mdtImg');
-                     var heightNav = $(window).height() * 0.8;
-                     css(heightNav);
+                     init_css();
+                     css();
                  }
 
                  function CreateBigVid(src) {
                      moz.append(document.createElement('video')).children().last().attr('src', src).attr('id', 'mdtImg').attr('controls', 'true');
-                     var heightNav = $(window).height() * 0.8;
-                     css(heightNav);
+                     init_css();
+                     css();
                  }
 
                  $(window).resize(function () {
-                     var heightNav = $(window).height() * 0.8;
-                     css(heightNav);
+                     css();
                  });
 
-                 function css(heightNav) {
+                 function init_css() {
                      $("#mdtImg").css({
                          'position': 'fixed',
                          'top': '0',
                          'bottom': '0',
                          'right': '0',
                          'left': '0',
-                         'width': 'auto',
-                         'height': heightNav,
                          'opacity': '1',
                          'margin-left': 'auto',
                          'margin-right': 'auto',
                          'margin-top': 'auto',
                          'margin-bottom': 'auto'
                      });
+                 }
+
+                 function css(heightNav) {
+                     var widthNav = $(window).width();
+                     var heightNav = $(window).height();
+                     $("#mdtImg").css({
+                         'height': heightNav * 0.8,
+                         'width': 'auto'
+                     });
+
+                     var widthImg = $("#mdtImg").width();
+                     if (widthNav < widthImg) {
+                         $("#mdtImg").css({
+                             'width': widthNav,
+                             'height': 'auto',
+                         });
+
+                     }
                  }
 
              });
