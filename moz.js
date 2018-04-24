@@ -2,16 +2,20 @@
      
     JQuery plugin which create slider from images grid (mosaic).
         Copyright (C) 2018  Gratusfr - https://github.com/Gratusfr/moz
+
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
         the Free Software Foundation, either version 3 of the License, or
         (at your option) any later version.
+
         This program is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of
         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
         GNU General Public License for more details.
+
         You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
+
     **************/
 
  (function ($) {
@@ -100,15 +104,7 @@
                          return;
                      }
                      var t = $('#moz img, #moz video').not('.mozExit').index(this);
-                     $('.active').removeClass('active').prop('disabled', null);
-                     $('.mozRight').removeClass('mozRight');
-                     $('.mozLeft').removeClass('mozLeft');
-                     t = t + 1;
-                     var t1 = t + 1;
-                     var t2 = t - 1;
-                     $('.mozBut button:nth-child(' + t + ')').addClass('active').prop('disabled', true);
-                     $('.mozBut button:nth-child(' + t1 + ')').addClass('mozRight');
-                     $('.mozBut button:nth-child(' + t2 + ')').addClass('mozLeft');
+                     navClass(t);
                      CreateBigImg(this.src);
                      mdt.show();
                      mozdt.show();
@@ -119,20 +115,25 @@
                          return;
                      }
                      var t = $('#moz img, #moz video').not('.mozExit').index(this);
-                     $('.active').removeClass('active').prop('disabled', null);
-                     $('.mozRight').removeClass('mozRight');
-                     $('.mozLeft').removeClass('mozLeft');
+                     navClass(t);
+                     CreateBigVid(this.src);
+                     mdt.show();
+                     mozdt.show();
+
+                 })
+                 
+                 function navClass(t){
+                     $('#moz .active').removeClass('active').prop('disabled', null);
+                     $('#moz .mozRight').removeClass('mozRight');
+                     $('#moz .mozLeft').removeClass('mozLeft');
                      t = t + 1;
                      var t1 = t + 1;
                      var t2 = t - 1;
                      $('.mozBut button:nth-child(' + t + ')').addClass('active').prop('disabled', true);
                      $('.mozBut button:nth-child(' + t1 + ')').addClass('mozRight');
                      $('.mozBut button:nth-child(' + t2 + ')').addClass('mozLeft');
-                     CreateBigVid(this.src);
-                     mdt.show();
-                     mozdt.show();
-
-                 })
+                 }
+                 
                  mdt.click(function () {
                          mdt.hide();
                          mozdt.hide();
@@ -145,8 +146,8 @@
 
                  function clickAction(no) {
                      $('.mozBut').children('button').removeClass('active').prop('disabled', null);
-                     $('.mozRight').removeClass('mozRight');
-                     $('.mozLeft').removeClass('mozLeft');
+                     $('#moz .mozRight').removeClass('mozRight');
+                     $('#moz .mozLeft').removeClass('mozLeft');
                      $(this).addClass('active').prop('disabled', true);
                      $(this).next().addClass('mozRight');
                      $(this).prev().addClass('mozLeft');
@@ -228,5 +229,4 @@
 
          });
      };
-
 })(jQuery);
