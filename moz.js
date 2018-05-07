@@ -23,6 +23,7 @@
      $.fn.moz = function (options) {
          var defauts = {
              "bgColor": "#556b2f",
+             "autoplay" : true
          };
 
          var userdata = $.extend(defauts, options);
@@ -105,7 +106,8 @@
                      }
                      var t = $('#moz img, #moz video').not('.mozExit').index(this);
                      navClass(t);
-                     CreateBigImg(this.src);
+                     var legend = $(this).siblings('figcaption').html();
+                     CreateBigImg(this.src, legend);
                      mdt.show();
                      mozdt.show();
 
@@ -116,7 +118,8 @@
                      }
                      var t = $('#moz img, #moz video').not('.mozExit').index(this);
                      navClass(t);
-                     CreateBigVid(this.src);
+                     var legend = $(this).siblings('figcaption').html();
+                     CreateBigVid(this.src, legend);
                      mdt.show();
                      mozdt.show();
 
@@ -138,6 +141,7 @@
                          mdt.hide();
                          mozdt.hide();
                          $('#mdtImg').remove();
+                         $('#mozLegend').remove();
                      }
 
                  )
@@ -152,30 +156,46 @@
                      $(this).next().addClass('mozRight');
                      $(this).prev().addClass('mozLeft');
                      $('#mdtImg').remove();
+                     $('#mozLegend').remove();
                      var src = mozRealChF.eq(this.innerHTML - 1).find('img').not('.mozErrorSrc').attr('src');
+                     var legend = mozRealChF.eq(this.innerHTML - 1).find('img').not('.mozErrorSrc').siblings('figcaption').html();
                      if (src === undefined) {
                          var src = mozRealChF.eq(this.innerHTML - 1).find('video').not('.mozErrorSrc').attr('src');
+                         var legend = mozRealChF.eq(this.innerHTML - 1).find('video').not('.mozErrorSrc').siblings('figcaption').html();
                          if (src === undefined) {
                              console.warn('src undefined');
                          } else {
-                             CreateBigVid(src);
+                             CreateBigVid(src, legend);
                          }
 
                      } else {
-                         CreateBigImg(src);
+                         CreateBigImg(src, legend);
                      }
                  }
 
-                 function CreateBigImg(src) {
+                 function CreateBigImg(src, legend) {
+                     Legend(legend);
                      moz.append(document.createElement('img')).children().last().attr('src', src).attr('id', 'mdtImg');
                      init_css();
                      css();
                  }
 
-                 function CreateBigVid(src) {
-                     moz.append(document.createElement('video')).children().last().attr('src', src).attr('id', 'mdtImg').attr('controls', 'true');
+                 function CreateBigVid(src, legend) {
+                     Legend(legend);
+                     var v = moz.append(document.createElement('video')).children().last().attr('src', src).attr('id', 'mdtImg').attr('controls', 'true');
+                     if(userdata.autoplay === true){
+                         v.attr('autoplay', '');
+                     }
                      init_css();
                      css();
+                     css(true);
+                 }
+                 
+                 function Legend(legend){
+                     if(legend != undefined){
+                         moz.append(document.createElement('p')).children().last().html(legend).attr('id', 'mozLegend');
+                          $('#mozLegend').css({'position': 'fixed', 'top': '0', 'left': '50%', 'transform': 'translateX(-50%)'});
+                     }
                  }
 
                  $(window).resize(function () {
