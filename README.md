@@ -8,6 +8,8 @@ Your page must have this tree :
 
 Element#moz > figure+ > img or video
 
+If figcation is inside figure tag, it will be displayed as description.
+
 ## Use
 
 1/ Link the moz.js plugin in your page (after JQuery).
@@ -17,6 +19,11 @@ Element#moz > figure+ > img or video
 You can custom the backgroung-color with the optional parameter « bgColor ». The background-color must be written under hexadecimal form (if you want black : #000 or #000000). If the format isn't correct, an error is dropped.
 
 $('body').moz({"bgColor": '#000000'});
+
+By default, there are autoplay on videos. You can remove this by writting :
+
+$('body').moz({"autoplay": 'false'});
+
 
 ## Customization
 There are various class which allow you to transform the world :
@@ -31,8 +38,6 @@ There are various class which allow you to transform the world :
 This script still in progress. In the TODO list :
 
 * Still be "use strict" compatible ;
-
-* Show figcaption as legend if exist ;
   
 * More customization ;
 
