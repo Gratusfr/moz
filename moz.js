@@ -23,7 +23,9 @@
      $.fn.moz = function (options) {
          var defauts = {
              "bgColor": "#556b2f",
-             "autoplay" : true
+             "autoplay": true,
+             "srcset": []
+             
          };
 
          var userdata = $.extend(defauts, options);
@@ -32,10 +34,38 @@
 
              $(function () {
                  var moz = $("#moz");
-
                  if (moz.length === 0) {
                      return; //exit if #moz is not found
                  }
+                 
+                 if(document.querySelectorAll('#moz').length > 1){
+                     console.error('#moz must be unique.');
+                     return;
+                 }
+                 
+                 if (userdata.srcset.constructor !== Array){
+                     console.error('"srcset" must be an array');
+                     userdata.srcset = [];
+                 }else{
+                     //polyfill Number.isInteger
+                     Number.isInteger = Number.isInteger || function(value) {
+                          return typeof value === 'number' && 
+                            isFinite(value) && 
+                            Math.floor(value) === value;
+                        };
+                     //fin polyfill
+                        for(var i=0; i<userdata.srcset.length; i++ ){
+                            if(!Number.isInteger(userdata.srcset[i])){
+                                console.error(userdata.srcset[i] + ' is not an interger (srcset).');
+                                userdata.srcset[i] = 0;
+                            }
+                        }
+                     userdata.srcset.sort(function(a, b) { return a - b; });
+                     console.log(userdata.srcset);
+                     
+                     
+                 }
+                 
                  var regegExa = /^#[0-9A-F]{3}([0-9A-F]{3})?$/i;
                  if (!regegExa.test(userdata.bgColor)) {
                      console.warn('The background-color must be written under hexadecimal form (if you want black : #000 or #000000). Your value has been overwritten by #556b2f.');
